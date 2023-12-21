@@ -29,10 +29,11 @@ def isBahay3(card1, card2, card3):
 
 # All Methods here related to sorting player hands
 class Hand:
-    def __init__(self):
+    def __init__(self, riskLevel):
         self.nonBahay = []
         self.almostBahay = []
         self.bahayInHand = []
+        self.riskLevel = riskLevel
 
     def get_fullHand(self):
         return [self.nonBahay, self.almostBahay, self.bahayInHand]
@@ -97,6 +98,7 @@ class Hand:
                 if bahay[0][0] == card[0] and bahay[1][0] == card[0]:
                     bahay.append(card)
                     self.nonBahay.pop(i)
+                    return
                     
                 if bahay[0][1] == card[1]:
                     if rankOrdinal(card) == rankOrdinal(bahay[0]) - 1 or rankOrdinal(card) == rankOrdinal(bahay[-1]) + 1:
