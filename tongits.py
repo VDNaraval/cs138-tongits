@@ -18,11 +18,14 @@ def TallyScores(players):
                 scores[i] += 10
 
     if min(scores[0], scores[1], scores[2]) == scores[0]:
-        print("player 1 wins")
+        return 1
+        # print("player 1 wins")
     elif min(scores[0], scores[1], scores[2]) == scores[1]:
-        print("player 2 wins")
+        return 2
+        # print("player 2 wins")
     else:
-        print("player 3 wins")
+        return 3
+        # print("player 3 wins")
 
 def ExtendShownBahay(player, shownBahay):
     for i in range(len(player.nonBahay)):
@@ -60,12 +63,12 @@ def DiscardOrKeep(player: hand.Hand, discardPile: game.Stack):
         
         discardPile.AddCard(player.nonBahay.pop()) # ! BUG APPEARS HERE (IndexError, Pop from Empty List)         
 
-    print("discard", discardPile.PeekTopCard()) #############################
+    # print("discard", discardPile.PeekTopCard()) #############################
     player.SortHand()
 
 def DrawFromDiscardPile(player, game, i):
     if len(player.nonBahay) <= 1: return # Okay, im not sure if adding this guard clause will cause problems
-    
+
     bahay = [game.discardPile.Draw()]
 
     k = -1
@@ -76,7 +79,7 @@ def DrawFromDiscardPile(player, game, i):
         if player.almostBahay[i][1] == player.nonBahay[j]:
             l = j
 
-    print(player.nonBahay)
+    # print(player.nonBahay)
     bahay.append(player.nonBahay.pop(max(k, l)))
     bahay.append(player.nonBahay.pop(min(k, l))) # ! BUG HERE (IndexError, Pop from Empty List)
                                                  # This happens when there is only 1 element left in nonBahay
@@ -85,37 +88,37 @@ def DrawFromDiscardPile(player, game, i):
     return 
 
 def DoTurnOne(player, game):
-    player.PrintHand() ###############################################
-    print("draw", game.deck.PeekTopCard()) #######################################
+    # player.PrintHand() ###############################################
+    # print("draw", game.deck.PeekTopCard()) #######################################
 
     game.deck.Draw()
     DiscardOrKeep(player, game.discardPile)
-    player.PrintHand() #############################################
+    # player.PrintHand() #############################################
 
 def DoRegularTurn(player, game):
     ### Standard Gameplay ####
     discarded = game.discardPile.PeekTopCard() # last discarded card
-    player.PrintHand() #############################################
+    # player.PrintHand() #############################################
 
     # See if discarded card can be used
     for i in range(len(player.almostBahay)):
         if hand.isBahay3(player.almostBahay[i][0], player.almostBahay[i][1], discarded): # discarded card can be used
-            print("discarded draw", discarded) #######################
+            # print("discarded draw", discarded) #######################
             DrawFromDiscardPile(player, game, i)
-            print("shown bahay", game.shownBahay) #########################
+            # print("shown bahay", game.shownBahay) #########################
             DiscardOrKeep(player, game.discardPile)
-            player.PrintHand() ########################################
+            # player.PrintHand() ########################################
             return
         
     # Discarded card cannot be used; draw from deck
-    print("draw", game.deck.PeekTopCard())
+    # print("draw", game.deck.PeekTopCard())
     game.deck.Draw()
     player.SortHand()
     while ExtendShownBahay(player, game.shownBahay):
         continue
-    print("shown bahay", game.shownBahay) #################################
+    # print("shown bahay", game.shownBahay) #################################
     DiscardOrKeep(player, game.discardPile)
-    player.PrintHand() ################################################
+    # player.PrintHand() ################################################
 
 
 def RunTongitsSim(riskLevel1, riskLevel2, riskLevel3):
@@ -141,15 +144,15 @@ def RunTongitsSim(riskLevel1, riskLevel2, riskLevel3):
 
     ### Main Game Loop ###
     while tongits.deck.get_cardCount() != 0:
-        print('remaining cards in deck:', tongits.deck.get_cardCount()) ##################################
+        # print('remaining cards in deck:', tongits.deck.get_cardCount()) ##################################
         
         ## Change Turn ##
         tongits.turn += 1
         player = players[turnOrder[(tongits.turn - 1) % 3] - 1]
         # player = players[(tongits.turn - 1) % 3]
 
-        print("=== Player {} ===".format((tongits.turn - 1) % 3 + 1)) #########################
-        print("turn", tongits.turn) ###########################################################
+        # print("=== Player {} ===".format((tongits.turn - 1) % 3 + 1)) #########################
+        # print("turn", tongits.turn) ###########################################################
         
         # Sort each player's hand for the first time on first turn
         if tongits.turn < 4:
@@ -163,7 +166,7 @@ def RunTongitsSim(riskLevel1, riskLevel2, riskLevel3):
 
         if player.nonBahay == []:
             break
-    TallyScores(players)
+    return TallyScores(players)
 
 if __name__ == "__main__":
     RunTongitsSim(1.01, 1.01, 1.01)
