@@ -126,21 +126,19 @@ def RunTongitsSim(riskLevel1, riskLevel2, riskLevel3):
     tongits = game.Game()
     tongits.deck.Shuffle()
 
-    ### Initialization of Player Hands ###
-    player1 = hand.Hand(riskLevel1) # 0, 0.5, 1.01
+    ### Initialization of Player Hands and turn orders ###
+    player1 = hand.Hand(riskLevel1) 
     player2 = hand.Hand(riskLevel2)
     player3 = hand.Hand(riskLevel3)
-
-    for i in range(12):
-        player1.nonBahay.append(tongits.deck.Draw())
-        player2.nonBahay.append(tongits.deck.Draw())
-        player3.nonBahay.append(tongits.deck.Draw())
-    player1.nonBahay.append(tongits.deck.Draw())
 
     players = [player1, player2, player3]
     turnOrder = [1,2,3]
     random.shuffle(turnOrder)
 
+    for i in range(12):
+        for j in range(3):
+            players[turnOrder[j] - 1].nonBahay.append(tongits.deck.Draw())
+    players[0].nonBahay.append(tongits.deck.Draw())
 
     ### Main Game Loop ###
     while tongits.deck.get_cardCount() != 0:
