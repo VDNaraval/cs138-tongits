@@ -121,9 +121,11 @@ def DoRegularTurn(player, game):
     # player.PrintHand() ################################################
 
 
-def RunTongitsSim(riskLevel1, riskLevel2, riskLevel3):
+def RunTongitsSim(riskLevel1, riskLevel2, riskLevel3, seed):
+    random.seed = seed
+
     ### Initialization of Game & Decks ###
-    tongits = game.Game()
+    tongits = game.Game(seed)
     tongits.deck.Shuffle()
 
     ### Initialization of Player Hands and turn orders ###
@@ -167,4 +169,4 @@ def RunTongitsSim(riskLevel1, riskLevel2, riskLevel3):
     return TallyScores(players)
 
 if __name__ == "__main__":
-    RunTongitsSim(1.01, 1.01, 1.01)
+    RunTongitsSim(1.01, 1.01, 1.01, 10000)

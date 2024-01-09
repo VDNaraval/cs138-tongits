@@ -31,8 +31,9 @@ class Stack:
     
 # Game Class
 class Game:
-    def __init__(self):
+    def __init__(self, seed):
         self.deck = Stack(isEmpty = False)
         self.discardPile = Stack(isEmpty = True)
         self.shownBahay = []
         self.turn = 0
+        random.seed = seed
