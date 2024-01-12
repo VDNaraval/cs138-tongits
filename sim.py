@@ -1,8 +1,8 @@
-import tongits
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.interpolate import CubicSpline
-from scipy.optimize import minimize
+import tongits
+import gauss
 
 sims_per_testcase = 1000 # Each Testcase will run this number * 3
 random_seed = 8092001
@@ -54,7 +54,9 @@ def do_testcase(p2risk, p3risk):
     # Plot the spline curve
     # plot_spline_curve(p2risk, p3risk, x_axis, y_axis, risk_levels)
     return (x_axis.tolist(), y_axis.tolist())
-                
+
+
+     
 def main():
     # p1riskLevel = 0 with 9 testcases (1000 simulations each testcase)
     # p2riskLevel = 0.5 with 9 testcases (1000 simulations each testcase)
@@ -65,14 +67,59 @@ def main():
     # for optima[i][j] where i=p2risk and j=p3risk
     optima = [[0 for _ in range(3)] for _ in range(3)]
     
+    #* 1. RUN SIMULATIONS
+    #* 2. OBTAIN OPTIMA
+
+    i = 0
+    print("\n[Running Simulations and obtaining Maximum p1risk values]")
     for p2risk in risk_values:
         for p3risk in risk_values:
-            (x_axis, y_axis) = do_testcase(p2risk, p3risk)
-            optimum = x_axis[y_axis.index(max(y_axis))]
-            print("For p2risk =", p2risk, "p3risk =", p3risk, ", optimal p1risk =", optimum)
+            i = i + 1
+            (x_axis, y_axis) = do_testcase(p2risk, p3risk) #* <--- Simulations
+            optimum = x_axis[y_axis.index(max(y_axis))] #* <--- Optima
+            print("Simulation Batch " + str(i) + ") For p2risk=" + str(p2risk), "\tp3risk=" + str(p3risk), "\t| optimal p1risk=" + str(optimum))
             optima[risk_values.index(p2risk)][risk_values.index(p3risk)] = optimum
 
-    print(optima)
+    print("\n[Performing Bilinear Interpolation in order to obtain coefficients to the following eq.]")
+    print("f(x,y) = a0 + a1x + a2y + a3xy")
+    print("\tNote: x=p2risk, y=p3risk, f(x,y)=optimal p1risk for a given p2risk & p3risk")
+    
+    #* 3. SET UP MATRICES FOR SLE
+    # f(x,y) = a[0] + a[1]*x + a[2]*y + a[3]*x*y
+
+    # p2risk: x_1 = 0, x_2 = 1
+    x1 = risk_values[0]
+    x2 = risk_values[2]
+
+    # p3risk: y_1 = 0, y_2 = 1
+    y1 = risk_values[0]
+    y2 = risk_values[2]
+    
+    #! NOTE: Row 2 Swapped with Row 3 to keep the matrix Dominantly Diagonal
+    M = [[1, x1, y1, x1 * y1],
+         [1, x2, y1, x2 * y2], # Row 2 Swapped with Row 3 to keep the matrix Dominantly Diagonal
+         [1, x1, y2, x1 * y2],
+         [1, x2, y2, x2 * y2]]
+    
+    b = [optima[risk_values.index(x1)][risk_values.index(y1)], 
+         optima[risk_values.index(x2)][risk_values.index(y1)], # Row 2 Swapped with Row 3 to keep the matrix Dominantly Diagonal
+         optima[risk_values.index(x1)][risk_values.index(y2)], 
+         optima[risk_values.index(x2)][risk_values.index(y2)]]
+    
+    print("matrix M=", M)
+    print("matrix A= [a0, a2, a1, a3]")
+    print("matrix b=", b)
+
+    #* 4. PERFORM BILINEAR INTERPOLATION USING GAUSSIAN ELIMINATION METHOD
+    print("\n[Performing Gaussian Elimination to solve MA = b]")
+    constants = gauss.gauss_seidel(M, b, len(M[0]), 0.0001)
+
+    print("matrix A=", constants)
+
+    [a0, a2, a1, a3] = constants
+    print("\n[Final Multilinear Equation]")
+    print("f(x,y) = "+ str(a0) +" + " + str(a1) +"*x + " + str(a2) +"*y + " + str(a3) +"*x*y")
+    
 
 if __name__ == "__main__":
     main()
