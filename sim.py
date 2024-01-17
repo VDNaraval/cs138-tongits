@@ -9,9 +9,9 @@ random_seed = 8092001
 
 # Returns a dictionary with the number of wins player1 had at each level
 def run_testcase_sims(p2risk, p3risk):
-    wins_per_level = {0: 0, 1: 0}  # Dictionary to count wins per risk level
+    wins_per_level = {0: 0, 0.5: 0, 1: 0}  # Dictionary to count wins per risk level
     
-    for p1risk in [0, 1]:
+    for p1risk in [0, 0.5, 1]:
         for i in range(sims_per_testcase):
             winner = tongits.RunTongitsSim(p1risk, p2risk, p3risk, random_seed)
             if winner == 1:
@@ -52,7 +52,7 @@ def do_testcase(p2risk, p3risk):
     y_axis = cs(x_axis)
     
     # Plot the spline curve
-    # plot_spline_curve(p2risk, p3risk, x_axis, y_axis, risk_levels)
+    plot_spline_curve(p2risk, p3risk, x_axis, y_axis, risk_levels)
     return (x_axis.tolist(), y_axis.tolist())
 
 
