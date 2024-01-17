@@ -9,9 +9,9 @@ random_seed = 8092001
 
 # Returns a dictionary with the number of wins player1 had at each level
 def run_testcase_sims(p2risk, p3risk):
-    wins_per_level = {0: 0, 0.5: 0, 1: 0}  # Dictionary to count wins per risk level
+    wins_per_level = {0: 0, 1: 0}  # Dictionary to count wins per risk level
     
-    for p1risk in [0, 0.5, 1]:
+    for p1risk in [0, 1]:
         for i in range(sims_per_testcase):
             winner = tongits.RunTongitsSim(p1risk, p2risk, p3risk, random_seed)
             if winner == 1:
@@ -61,11 +61,11 @@ def main():
     # p1riskLevel = 0 with 9 testcases (1000 simulations each testcase)
     # p2riskLevel = 0.5 with 9 testcases (1000 simulations each testcase)
     # p3riskLevel = 1 with 9 testcases (1000 simulations each testcase)
-    risk_values = [0, 0.5, 1]
+    risk_values = [0, 1]
 
     # 2D array full of the optimum values from each testcase
     # for optima[i][j] where i=p2risk and j=p3risk
-    optima = [[0 for _ in range(3)] for _ in range(3)]
+    optima = [[0 for _ in range(2)] for _ in range(2)]
     
     #* 1. RUN SIMULATIONS
     #* 2. OBTAIN OPTIMA
@@ -89,11 +89,11 @@ def main():
 
     # p2risk: x_1 = 0, x_2 = 1
     x1 = risk_values[0]
-    x2 = risk_values[2]
+    x2 = risk_values[1]
 
     # p3risk: y_1 = 0, y_2 = 1
     y1 = risk_values[0]
-    y2 = risk_values[2]
+    y2 = risk_values[1]
     
     #! NOTE: Row 2 Swapped with Row 3 to keep the matrix Dominantly Diagonal
     M = [[1, x1, y1, x1 * y1],
