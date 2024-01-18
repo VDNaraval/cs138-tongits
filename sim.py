@@ -58,9 +58,7 @@ def do_testcase(p2risk, p3risk):
 
      
 def main():
-    # p1riskLevel = 0 with 9 testcases (1000 simulations each testcase)
-    # p2riskLevel = 0.5 with 9 testcases (1000 simulations each testcase)
-    # p3riskLevel = 1 with 9 testcases (1000 simulations each testcase)
+    # 4 Test Cases, 1 for each Permutation of P2 and P3 risk_values set below
     risk_values = [0, 1]
 
     # 2D array full of the optimum values from each testcase
@@ -110,8 +108,8 @@ def main():
     print("matrix A= [a0, a2, a1, a3]")
     print("matrix b=", b)
 
-    #* 4. PERFORM BILINEAR INTERPOLATION USING GAUSSIAN ELIMINATION METHOD
-    print("\n[Performing Gaussian Elimination to solve MA = b]")
+    #* 4. PERFORM BILINEAR INTERPOLATION USING GAUSS-SEIDEL METHOD
+    print("\n[Performing Gauss-Seidel Method to solve MA = b]")
     constants = gauss.gauss_seidel(M, b, len(M[0]), 0.0001)
 
     print("matrix A=", constants)
